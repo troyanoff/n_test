@@ -42,8 +42,8 @@ async def get_list(
     building_uuid: UUID = None,
     name: str = None,
     radius: int = Query(None, ge=0, le=180),
-    longitude: int = Query(None, ge=-180, le=180),
-    latitude: int = Query(None, ge=-90, le=90),
+    longitude: float | int = Query(None, ge=-180, le=180),
+    latitude: int | int = Query(None, ge=-90, le=90),
     limit: int = 20,
     offset: int = 0,
     service: CompanyService = Depends(get_company_service)

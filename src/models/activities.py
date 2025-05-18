@@ -9,7 +9,7 @@ class Activity(Base):
     __tablename__ = 'activities'
 
     name: Mapped[str] = mapped_column(String(200))
-    path: Mapped[str] = mapped_column(String(110), default='/')
+    path: Mapped[str] = mapped_column(String(110), default='', index=True)
 
     companies = relationship(
         'Company',

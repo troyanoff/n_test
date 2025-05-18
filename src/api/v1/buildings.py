@@ -17,8 +17,8 @@ router = APIRouter()
 )
 async def get_list(
     radius: int = Query(None, ge=0, le=180),
-    longitude: int = Query(None, ge=-180, le=180),
-    latitude: int = Query(None, ge=-90, le=90),
+    longitude: float | int = Query(None, ge=-180, le=180),
+    latitude: float | int = Query(None, ge=-90, le=90),
     limit: int = 20,
     offset: int = 0,
     service: BuildingService = Depends(get_building_service)

@@ -67,7 +67,7 @@ async def create_company_relations(session: AsyncSession):
         activities.append(
             Activity(
                 uuid=one_uuid,
-                name=fake.text(15),
+                name=f'1 кат. {fake.text(15)}',
                 path=f'{one_uuid}'
             )
         )
@@ -75,20 +75,20 @@ async def create_company_relations(session: AsyncSession):
             two_uuid = uuid.uuid4()
             activities.append(
                 Activity(
-                    uuid=one_uuid,
-                    name=fake.text(15),
+                    uuid=two_uuid,
+                    name=f'2 кат. {fake.text(15)}',
                     path=f'{one_uuid}/{two_uuid}'
                 )
             )
             for _ in range(50):
                 three_uuid = uuid.uuid4()
                 last_act = Activity(
-                    uuid=one_uuid,
-                    name=fake.text(15),
+                    uuid=three_uuid,
+                    name=f'3 кат. {fake.text(15)}',
                     path=f'{one_uuid}/{two_uuid}/{three_uuid}'
                 )
                 activities.append(last_act)
-                last_activities.append(last_activities)
+                last_activities.append(last_act)
 
     session.add_all(activities)
     await session.commit()
@@ -114,6 +114,8 @@ async def async_main() -> None:
         await create_company_relations(session)
 
     await engine.dispose()
+
+    print('fake rows uploaded')
 
 
 asyncio.run(async_main())

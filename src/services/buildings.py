@@ -40,8 +40,7 @@ class BuildingService:
 
     async def obj_conversion(self, obj: Building) -> BuildingSchema:
         """Conversion obj to schema."""
-        obj_dict = obj.__dict__
-        return BuildingSchema(**obj_dict)
+        return BuildingSchema.model_validate(obj, from_attributes=True)
 
     async def get(self, item_uuid: UUID) -> BuildingSchema:
         query = select(Building).where(Building.uuid == item_uuid)

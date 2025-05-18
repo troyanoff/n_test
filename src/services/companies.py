@@ -6,6 +6,7 @@ from uuid import UUID
 
 from db.postgres import get_session
 from models.activities import Activity
+from models.buildings import Building
 from models.companies import Company
 from schemas.companies import CompanySchema
 
@@ -33,16 +34,15 @@ class CompanyService:
         if bot < -90:
             bot = -90
         return [
-            Company.building.longitude <= right,
-            Company.building.longitude >= left,
-            Company.building.latitude <= top,
-            Company.building.latitude >= bot
+            Building.longitude <= right,
+            Building.longitude >= left,
+            Building.latitude <= top,
+            Building.latitude >= bot
         ]
 
     async def obj_conversion(self, obj: Company) -> CompanySchema:
         """Conversion obj to schema."""
-        obj_dict = obj.__dict__
-        return CompanySchema(**obj_dict)
+        return CompanySchema.model_validate(obj, from_attributes=True)
 
     async def get(self, item_uuid: UUID) -> CompanySchema:
         query = select(Company).where(Company.uuid == item_uuid)
@@ -67,11 +67,8 @@ class CompanyService:
         where_clauses = []
         if activity_uuid:
             where_clauses.append(
-                or_(
-                    Company.activities.any(Activity.uuid == activity_uuid),
-                    Company.activities.any(
-                        Activity.path.contains(activity_uuid.__str__()))
-                )
+                Company.activities.any(
+                    Activity.path.contains(activity_uuid.__str__()))
             )
         if building_uuid:
             where_clauses.append(Company.building_uuid == building_uuid)
@@ -83,7 +80,7 @@ class CompanyService:
                 longitude, latitude, radius)
             where_clauses += geo_filter
 
-        query = select(Company)
+        query = select(Company).join(Company.building)
         if where_clauses:
             query = query.where(and_(*where_clauses))
         result = await self.session.execute(
