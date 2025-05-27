@@ -1,0 +1,41 @@
+3 1 2 1
+0
+0
+X
+X
+0
+X
+import math
+import textwrap
+
+# with open('test1.txt') as file:
+#     data = file.read().split('\n')
+
+
+# n, m, x, y = list(map(int, data[0].split()))
+n, m, x, y = list(map(int, input().split()))
+
+height = n * x
+height_one = height == 1
+len_flat = x * y
+half_flat = math.ceil(len_flat / 2)
+data = []
+for _ in range(height):
+    data.append(input())
+
+# data = data[1:]
+
+result = 0
+for index in range(0, height, x):
+    windows_count = []
+    for i in range(x):
+        row_flats = [
+            i.count('X') for i in textwrap.wrap(data[index: index + x][i], y)]
+        if not windows_count:
+            windows_count = row_flats
+            continue
+        windows_count = list(map(sum, zip(windows_count, row_flats)))
+
+    result += len(list(filter(lambda num: num >= half_flat, windows_count)))
+
+print(result)
